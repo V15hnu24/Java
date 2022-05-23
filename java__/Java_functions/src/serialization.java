@@ -7,7 +7,6 @@ public class serialization {
 
         File f = new File("obj.txt");
 
-
         FileOutputStream fos = new FileOutputStream(f);
         ObjectOutputStream oos = new ObjectOutputStream(fos);
         oos.writeObject(s);
