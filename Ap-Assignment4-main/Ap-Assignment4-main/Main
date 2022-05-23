@@ -1,0 +1,307 @@
+import java.io.BufferedReader;
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.InputStreamReader;
+import java.util.ArrayList;
+import java.util.Random;
+import java.util.StringTokenizer;
+
+public class Main {
+    public static void main(String[] args) throws IOException{
+
+        reader.init(System.in);
+
+        String toys[] = new String[20];
+        toys = new String[]{"bike", "car", "teddy", "jerry", "duck",
+                "mouse", "mickey", "candy", "kite", "doll",
+                "bear", "train", "ducky", "airplane", "ball",
+                "crayons", "horse", "drums", "pen", "book"};
+
+        ArrayList<String> result = new ArrayList<>();
+        String[] toysUwon = new String[5];
+
+        int i = 0;
+        while(i!=5){
+            System.out.println("*******************************");
+            System.out.print("Hit enter to initialize the game..");
+            String s = reader.nextLine();
+
+            randomGenerator randNumbr = new randomGenerator(25);
+            int numb = randNumbr.getAns();
+            if (numb == 0){
+                numb = numb+1;
+            }
+            if (numb<21) {
+                System.out.println("You are on " + numb + " tile");
+            }
+            // Exception Handled for tiles greater than 20.
+
+            if (numb%2 == 0 && numb<21){
+                result.add(toys[numb-1]);
+                System.out.println("You won "+toys[numb-1]);
+            }
+            else if (numb<21){
+                System.out.println("Question answer round. Integer or strings?");
+                String choice = reader.next();
+
+                if (!choice.equals("integer") && !choice.equals("String")) {
+
+                    while (!choice.equals("integer") && !choice.equals("String")) {
+                        System.out.println("Enter integer or String.. Make sure you enter correct spelling");
+                        choice = reader.next();
+                        try {
+
+                            if (!choice.equals("integer") && !choice.equals("String")) {
+                                throw new myError("Enter integer or String.. Make sure you enter correct spelling");
+                            }
+                        } catch (myError e) {
+                            System.out.println(
+                                    e.getMessage());
+                        }
+
+                    }
+                }
+
+                if (choice.equals("integer")) {
+
+                    System.out.println("In integerbvi");
+                    genericCalculator<Integer> calc = new genericCalculator<>(5);
+                    int num1 = calc.randomNumberGenerator();
+                    int num2 = calc.randomNumberGenerator();
+
+                    System.out.println("divide the two numbers "+ (num1) + " " + num2);
+
+                    int resultForDivision = reader.nextInt();
+                    if (calc.intPart(num1,num2,resultForDivision)){
+                        result.add(toys[numb-1]);
+                        System.out.println("You won "+toys[numb-1]);
+                    }
+                    else{
+                        System.out.println("Incorrect answer");
+                    }
+                }
+
+                else if(choice.equals("String")){
+                    genericCalculator<String> calc = new genericCalculator<>("vis");
+
+                    String str1 = calc.StringGenerator();
+                    String str2 = calc.StringGenerator();
+
+                    System.out.println("Concatenate the two Strings "+str1+" "+str2);
+
+                    String ans = reader.next();
+
+                    boolean ver = calc.stringPart(ans,str1,str2);
+                    if (ver){
+                        result.add(toys[numb-1]);
+                        System.out.println("You won "+ toys[numb-1]);
+                    }
+                    else{
+                        System.out.println("Incorrect answer");
+                    }
+
+                }
+
+            }
+
+            try{
+                if (numb > 20){
+                    throw new myError("You are too energetic and zoomed past all the tiles. Muddy Puddle Splash!");
+                }
+            }
+            catch (myError e){
+                System.out.println(e.getMessage());
+            }
+            finally {
+                i++;
+            }
+        }
+/*
+        try {
+            for (int j = 0; j <= 4; j++) {
+                System.out.println(toysUwon[i]);
+            }
+        }
+        catch (ArrayIndexOutOfBoundsException e){
+            System.out.println(e.getMessage());
+        }*/
+        System.out.print("You won: ");
+        for (String res:
+             result) {
+            System.out.print(res+"  ");
+        }
+        System.out.println();
+    }
+
+}
+
+class toy implements Cloneable{
+    private String toy;
+    public toy(String toy){
+        this.toy = toy;
+    }
+    public toy clone(){
+        try{
+            return (toy) super.clone();
+        }
+        catch (CloneNotSupportedException c){
+            System.out.println(c.getMessage());
+        }
+        return null;
+    }
+
+    public String getToy() {
+        return toy;
+    }
+
+    public void setToy(String toy) {
+        this.toy = toy;
+    }
+
+}
+
+
+class myError extends Exception{
+    public myError(String s){
+        super(s);
+    }
+}
+
+class genericCalculator <T> {
+    T obj;
+    genericCalculator(T obj){
+        this.obj = obj;
+    }
+
+    public T getObj() {
+        return obj;
+    }
+/*
+    public boolean IntOrString(T ans){
+        if (getObj().getClass().getTypeName() == "String"){
+            System.out.println(getObj().getClass().getTypeName()+" remove this affter ");
+            return stringPart(ans);
+        }
+        return intPart(ans);
+    }
+
+ */
+    public int randomNumberGenerator(){
+        randomGenerator rand4digits = new randomGenerator(9999);
+        int num1 = rand4digits.getAns();
+        return num1;
+    }
+
+    public boolean intPart(T num1, T num2, T res) {
+
+        int ans = 0;
+
+        try{
+            ans =(int)num1/(int)num2;
+        }
+        catch (ArithmeticException e){
+            System.out.println(e.getMessage());
+        }
+
+        if ((int) res == ans){
+            return true;
+        }
+        else {
+            return false;
+        }
+    }
+
+
+
+    public boolean stringPart(T ans,T str1,T str2) {
+
+
+        if (((String) str1+(String) str2).equals((String) ans)){
+            return true;
+        }
+        return false;
+    }
+
+    public String StringGenerator(){
+
+        StringBuffer r = new StringBuffer(4);
+        for (int i = 0; i < 4; i++) {
+            randomGenerator rand4digits = new randomGenerator(52);
+            int num1 = rand4digits.getAns();
+
+            if (num1 <= 26){
+                num1 = 96 + num1;
+            }
+            else if(num1 > 26){
+                num1 = 64 + num1 -26;
+            }
+
+            r.append((char)num1);
+        }
+
+        return r.toString();
+
+    }
+
+}
+
+// this class generates the random number.
+class randomGenerator {
+    private int num;
+    private int ans;
+
+    randomGenerator(int num){
+        this.num = num;
+    }
+
+    public void rollFortheNumber() {
+        Random rand = new Random();
+        int curr_faceValue = 1 + rand.nextInt(num);
+        setFaceValue(curr_faceValue);
+    }
+
+    private void setFaceValue(int curr_faceValue) {
+        this.ans = curr_faceValue;
+    }
+
+    public int getAns() {
+        rollFortheNumber();
+        return ans;
+    }
+}
+
+//general reader class.
+class reader {
+    static BufferedReader reader;
+    static StringTokenizer tokenizer;
+
+    // call this method to initialize reader for InputStream
+    static void init(InputStream input) {
+        reader = new BufferedReader(
+                new InputStreamReader(input) );
+        tokenizer = new StringTokenizer("");
+    }
+
+    // get next word
+    static String next() throws IOException {
+        while ( ! tokenizer.hasMoreTokens() ) {
+            //TODO add check for eof if necessary
+            tokenizer = new StringTokenizer(
+                    reader.readLine() );
+        }
+        return tokenizer.nextToken();
+    }
+    static String nextLine() throws IOException {
+        return reader.readLine();
+    }
+
+    static int nextInt() throws IOException {
+        return Integer.parseInt( next() );
+    }
+    static double nextDouble() throws IOException {
+        return Double.parseDouble( next() );
+    }
+    static long nextLong() throws IOException{
+        return Long.parseLong(next());
+    }
+}
